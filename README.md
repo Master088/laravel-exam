@@ -5,29 +5,32 @@ LaravelAssessment API - README
 =========================================
 
 1. Clone the repository:
-   git clone <your-repo-url>
+   git clone https://github.com/Master088/laravel-exam.git
    cd laravel-assessment
 
 2. Install PHP dependencies:
    composer install
 
-3. Install Node dependencies and build assets:
+3. Install Node dependencies:
    npm install
-   npm run build
 
-4. Copy .env.example to .env:
+4. Build frontend scaffolding:
+   npm run dev       # For development
+   npm run build     # For production
+
+5. Copy .env.example to .env:
    cp .env.example .env
 
-5. Generate the application key:
+6. Generate the application key:
    php artisan key:generate
 
-6. Run migrations:
+7. Run migrations:
    php artisan migrate
 
-7. (Optional) Seed the database with an admin user:
+8. (Optional) Seed the database with an admin user:
    php artisan db:seed --class=AdminSeeder
 
-8. Serve the application:
+9. Serve the application:
    php artisan serve
    Your app will run at http://localhost:8000
 
@@ -61,7 +64,7 @@ MAIL_FROM_NAME="${APP_NAME}"
 
 SESSION_DRIVER=file
 CACHE_DRIVER=file
-QUEUE_CONNECTION=sync
+QUEUE_CONNECTION=database
 
 > Replace <MAILTRAP_USERNAME> and <MAILTRAP_PASSWORD> with your Mailtrap credentials.
 
@@ -78,6 +81,10 @@ QUEUE_CONNECTION=sync
 - Optional admin seeder:
   php artisan db:seed --class=AdminSeeder
 
+- Queue tables (if using database queue):
+  php artisan queue:table
+  php artisan migrate
+
 =========================================
 4. Mail Setup (Mailtrap)
 =========================================
@@ -87,7 +94,19 @@ QUEUE_CONNECTION=sync
 - Useful for testing forgot password and reset password.
 
 =========================================
-5. API Endpoints
+5. Queue Setup
+=========================================
+
+- Set QUEUE_CONNECTION=database in .env
+- Run migrations for queue:
+  php artisan queue:table
+  php artisan migrate
+- Start queue worker:
+  php artisan queue:work
+- All emails (like password resets) will be dispatched to queue if using ShouldQueue.
+
+=========================================
+6. API Endpoints
 =========================================
 
 Prefix: /api
@@ -141,7 +160,7 @@ DELETE /api/users/{id}
   Delete user
 
 =========================================
-6. Sample API Requests / Responses
+7. Sample API Requests / Responses
 =========================================
 
 Login:
@@ -205,7 +224,7 @@ Response:
 }
 
 =========================================
-7. Seeders (Optional)
+8. Seeders (Optional)
 =========================================
 
 AdminSeeder.php
@@ -228,11 +247,13 @@ class AdminSeeder extends Seeder
 }
 
 =========================================
-8. Notes
+9. Notes
 =========================================
 
 - All API requests must include Bearer token in Authorization header for protected routes.
 - Mailtrap captures emails for password reset testing.
 - Admin middleware restricts routes to users with "role": "admin".
 - Forgot password requests are rate-limited: 5 per minute per IP.
+- Use "npm run dev" during development to scaffold frontend assets.
+- Use "php artisan queue:work" to process queued jobs like email notifications.
 
