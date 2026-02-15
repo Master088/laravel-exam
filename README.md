@@ -1,11 +1,21 @@
-LaravelAssessment API - README
+LaravelAssessment - README
 
 =========================================
-1. Installation Steps
+1. Overview
+=========================================
+
+This Laravel application supports **both Web and API routes**:
+- Web: Traditional Blade views for authentication, dashboard, and user management.
+- API: Fully RESTful JSON endpoints protected by **Sanctum** with token-based authentication.
+
+All core features (login, registration, dashboard, user management, forgot/reset password) are available for both Web and API clients.
+
+=========================================
+2. Installation Steps
 =========================================
 
 1. Clone the repository:
-   git clone https://github.com/Master088/laravel-exam.git
+   git clone  https://github.com/Master088/laravel-exam.git
    cd laravel-assessment
 
 2. Install PHP dependencies:
@@ -35,7 +45,7 @@ LaravelAssessment API - README
    Your app will run at http://localhost:8000
 
 =========================================
-2. Environment Setup
+3. Environment Setup
 =========================================
 
 .env.example
@@ -69,7 +79,7 @@ QUEUE_CONNECTION=database
 > Replace <MAILTRAP_USERNAME> and <MAILTRAP_PASSWORD> with your Mailtrap credentials.
 
 =========================================
-3. Migrations
+4. Migrations
 =========================================
 
 - Users table includes a 'role' column:
@@ -86,7 +96,7 @@ QUEUE_CONNECTION=database
   php artisan migrate
 
 =========================================
-4. Mail Setup (Mailtrap)
+5. Mail Setup (Mailtrap)
 =========================================
 
 - Configure MAIL_* settings in .env as above.
@@ -94,7 +104,7 @@ QUEUE_CONNECTION=database
 - Useful for testing forgot password and reset password.
 
 =========================================
-5. Queue Setup
+6. Queue Setup
 =========================================
 
 - Set QUEUE_CONNECTION=database in .env
@@ -106,7 +116,22 @@ QUEUE_CONNECTION=database
 - All emails (like password resets) will be dispatched to queue if using ShouldQueue.
 
 =========================================
-6. API Endpoints
+7. Web Routes
+=========================================
+
+- Traditional Blade views:
+
+GET /          -> Dashboard (auth required)
+GET /login     -> Login page
+GET /register  -> Registration page
+GET /password/reset -> Forgot password
+POST /logout   -> Logout
+Resourceful routes for /users (admin only)  
+
+All forms use CSRF tokens and standard Laravel session auth.
+
+=========================================
+8. API Routes
 =========================================
 
 Prefix: /api
@@ -142,25 +167,14 @@ GET /api/dashboard
 User Management (Admin only):
 
 GET /api/users
-  Auth: ✅ Admin
-  List all users
-
 POST /api/users
-  Body: { "name":"...","email":"...","password":"...","password_confirmation":"...","role":"user/admin" }
-  Auth: ✅ Admin
-  Create a new user
-
 PUT /api/users/{id}
-  Body: { "name":"...","role":"user/admin" }
-  Auth: ✅ Admin
-  Update user info
-
 DELETE /api/users/{id}
-  Auth: ✅ Admin
-  Delete user
+
+All user management endpoints require Bearer token authentication and 'admin' role.
 
 =========================================
-7. Sample API Requests / Responses
+9. Sample API Requests / Responses
 =========================================
 
 Login:
@@ -224,7 +238,7 @@ Response:
 }
 
 =========================================
-8. Seeders (Optional)
+10. Seeders (Optional)
 =========================================
 
 AdminSeeder.php
@@ -247,7 +261,7 @@ class AdminSeeder extends Seeder
 }
 
 =========================================
-9. Notes
+11. Notes
 =========================================
 
 - All API requests must include Bearer token in Authorization header for protected routes.
@@ -256,4 +270,4 @@ class AdminSeeder extends Seeder
 - Forgot password requests are rate-limited: 5 per minute per IP.
 - Use "npm run dev" during development to scaffold frontend assets.
 - Use "php artisan queue:work" to process queued jobs like email notifications.
-
+- Both Web and API endpoints are fully supported.
